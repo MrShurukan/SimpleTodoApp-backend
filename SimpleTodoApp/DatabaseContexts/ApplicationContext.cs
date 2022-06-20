@@ -5,6 +5,10 @@ namespace SimpleTodoApp.DatabaseContexts;
 
 public class ApplicationContext : DbContext
 {
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<TodoItem> TodoItems { get; set; }
+    public ApplicationContext(DbContextOptions options) : base(options)
+    {
+    }
+
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<TodoItem> TodoItems { get; set; } = null!;
 }

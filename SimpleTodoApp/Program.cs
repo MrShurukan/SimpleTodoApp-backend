@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SimpleTodoApp;
 using SimpleTodoApp.DatabaseContexts;
 using SimpleTodoApp.Models;
@@ -14,7 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationContext>();
+var dbConnectionString = File.ReadAllText(".dbconnection");
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseNpgsql(dbConnectionString);
+});
+
 builder.Services.AddScoped<ICategoryRepository, CategoryDatabaseRepository>();
 builder.Services.AddScoped<ITodoItemRepository, TodoItemDatabaseRepository>();
 
