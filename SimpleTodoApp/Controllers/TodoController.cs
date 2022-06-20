@@ -1,0 +1,99 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using SimpleTodoApp.Contracts.Requests;
+using SimpleTodoApp.Models;
+using SimpleTodoApp.Repositories;
+
+namespace SimpleTodoApp.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class TodoController : Controller
+{
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly ITodoItemRepository _todoItemRepository;
+
+    public TodoController(ICategoryRepository categoryRepository, ITodoItemRepository todoItemRepository)
+    {
+        _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+        _todoItemRepository = todoItemRepository ?? throw new ArgumentNullException(nameof(todoItemRepository));
+    }
+    
+    #region Todo Items
+    
+    [HttpGet("TodoList")]
+    public IActionResult GetTodoList()
+    {
+        var categories = _categoryRepository.GetList();
+        return Ok(categories);
+    }
+
+    [HttpPost("TodoItem")]
+    public IActionResult PostTodoItem(PostTodoItemRequest request)
+    {
+        var category = _categoryRepository.Get(category => category.Id == request.CategoryId);
+        if (category is null)
+            return NotFound($"Category: {request.CategoryId}");
+
+        var todoItem = new TodoItem
+        {
+            Category = category,
+            Text = request.Text,
+            IsChecked = false
+        };
+
+        _todoItemRepository.Add(todoItem);
+        return NoContent();
+    }
+    
+    [HttpDelete("TodoItem")]
+    public IActionResult DeleteTodoItem([Required] int todoItemId)
+    {
+        var todoItem = _todoItemRepository.Get(todo => todo.Id == todoItemId);
+        if (todoItem is null)
+            return NotFound(todoItemId);
+
+        _todoItemRepository.Remove(todoItem);
+        return NoContent();
+    }
+    
+    [HttpPut("MarkTodoItem")]
+    public IActionResult PutMarkTodoItem([Required] int todoItemId)
+    {
+        var todoItem = _todoItemRepository.Get(todo => todo.Id == todoItemId);
+        if (todoItem is null)
+            return NotFound(todoItemId);
+
+        _todoItemRepository.MarkTodoItem(todoItem);
+        return NoContent();
+    }
+    
+    #endregion
+
+    #region Category
+
+    [HttpPost("Category")]
+    public IActionResult PostCategory(PostCategoryRequest request)
+    {
+        var category = new Category
+        {
+            Name = request.Name
+        };
+
+        _categoryRepository.Add(category);
+        return NoContent();
+    }
+    
+    [HttpDelete("Category")]
+    public IActionResult DeleteCategory([Required] int todoItemId)
+    {
+        var category = _categoryRepository.Get(category => category.Id == todoItemId);
+        if (category is null)
+            return NotFound(todoItemId);
+
+        _categoryRepository.Remove(category);
+        return NoContent();
+    }
+    
+    #endregion
+}

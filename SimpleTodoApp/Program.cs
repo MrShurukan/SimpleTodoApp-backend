@@ -1,3 +1,10 @@
+using SimpleTodoApp;
+using SimpleTodoApp.DatabaseContexts;
+using SimpleTodoApp.Models;
+using SimpleTodoApp.Repositories;
+
+MapsterConfiguration.Configure();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +13,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationContext>();
+builder.Services.AddScoped<ICategoryRepository, CategoryDatabaseRepository>();
+builder.Services.AddScoped<ITodoItemRepository, TodoItemDatabaseRepository>();
 
 var app = builder.Build();
 
