@@ -3,3 +3,6 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+SimpleTodoApp/.dbconnection
+
+.idea/.idea.SimpleTodoApp-backend/.idea/
