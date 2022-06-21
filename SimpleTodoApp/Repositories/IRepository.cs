@@ -12,4 +12,5 @@ public interface IRepository<T>
     List<T> GetList();
     void Remove(T item);
     void RemoveRange(IEnumerable<T> items);
+    void SaveChanges();
 }

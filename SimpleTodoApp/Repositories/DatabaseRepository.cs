@@ -58,4 +58,9 @@ public abstract class DatabaseRepository<TItem> : IRepository<TItem>
         DbSet.RemoveRange(items);
         Context.SaveChanges();
     }
+
+    public void SaveChanges()
+    {
+        Context.SaveChanges();
+    }
 }

@@ -57,6 +57,19 @@ public class TodoController : Controller
         return NoContent();
     }
     
+    [HttpPut("TodoItem")]
+    public IActionResult PutTodoItem(PutTodoItemRequest request)
+    {
+        var todoItem = _todoItemRepository.Get(todo => todo.Id == request.Id);
+        if (todoItem is null)
+            return NotFound(request.Id);
+
+        todoItem.Text = request.Text;
+        _todoItemRepository.SaveChanges();
+        
+        return NoContent();
+    }
+    
     [HttpPut("MarkTodoItem")]
     public IActionResult PutMarkTodoItem([Required] int todoItemId)
     {
@@ -92,6 +105,19 @@ public class TodoController : Controller
             return NotFound(todoItemId);
 
         _categoryRepository.Remove(category);
+        return NoContent();
+    }
+    
+    [HttpPut("Category")]
+    public IActionResult PutCategory(PutCategoryRequest request)
+    {
+        var category = _categoryRepository.Get(category => category.Id == request.Id);
+        if (category is null)
+            return NotFound(request.Id);
+
+        category.Name = request.Name;
+        _categoryRepository.SaveChanges();
+        
         return NoContent();
     }
     
