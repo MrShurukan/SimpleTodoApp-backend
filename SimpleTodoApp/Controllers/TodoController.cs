@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SimpleTodoApp.Contracts.Requests;
 using SimpleTodoApp.Models;
@@ -24,7 +25,7 @@ public class TodoController : Controller
     [HttpGet("TodoList")]
     public IActionResult GetTodoList()
     {
-        var categories = _categoryRepository.GetList();
+        var categories = _categoryRepository.GetList().OrderBy(c => c.Id);
         return Ok(categories);
     }
 
@@ -43,7 +44,7 @@ public class TodoController : Controller
         };
 
         _todoItemRepository.Add(todoItem);
-        return NoContent();
+        return Created("todoItem", todoItem.Id);
     }
     
     [HttpDelete("TodoItem")]
@@ -67,7 +68,7 @@ public class TodoController : Controller
         todoItem.Text = request.Text;
         _todoItemRepository.SaveChanges();
         
-        return NoContent();
+        return Created("todoItem", todoItem.Id);
     }
     
     [HttpPut("MarkTodoItem")]
@@ -94,15 +95,15 @@ public class TodoController : Controller
         };
 
         _categoryRepository.Add(category);
-        return NoContent();
+        return Created("category", category.Id);
     }
     
     [HttpDelete("Category")]
-    public IActionResult DeleteCategory([Required] int todoItemId)
+    public IActionResult DeleteCategory([Required] int categoryId)
     {
-        var category = _categoryRepository.Get(category => category.Id == todoItemId);
+        var category = _categoryRepository.Get(category => category.Id == categoryId);
         if (category is null)
-            return NotFound(todoItemId);
+            return NotFound(categoryId);
 
         _categoryRepository.Remove(category);
         return NoContent();
