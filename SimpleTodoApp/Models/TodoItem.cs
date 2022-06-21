@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SimpleTodoApp.Models;
 
@@ -10,6 +11,7 @@ public class TodoItem
     
     [ForeignKey("Category")]
     public int CategoryId { get; set; }
+    [JsonIgnore]
     public Category Category { get; set; }
     
     public string Text { get; set; }
